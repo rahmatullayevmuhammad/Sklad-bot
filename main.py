@@ -1,7 +1,7 @@
 import asyncio
 import logging
 
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, F
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
@@ -19,6 +19,12 @@ async def start(message: Message):
     )
 
 
+# Fallback handler for any other text messages
+@dp.message(F.text)
+async def unknown_message(message: Message):
+    await message.answer("Noma'lum buyruq. Iltimos, /start bosing.")
+
+
 async def main():
     logging.basicConfig(level=logging.INFO)
 
@@ -26,7 +32,8 @@ async def main():
 
     print("✅ Ombor Bot ishga tushdi!")
 
-    await dp.start_polling(bot)
+    # Pass allowed_updates to ignore non-message updates (like chat_member, channel_post, etc.)
+    await dp.start_polling(bot, allowed_updates=["message"])
 
 
 if __name__ == "__main__":
